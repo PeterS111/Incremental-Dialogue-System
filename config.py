@@ -1,6 +1,10 @@
 # coding=utf-8
 import torch
 
+## corrected here
+
+#################
+
 DATA_ROOT = "./data"
 ESP = 1e-5
 
@@ -38,8 +42,20 @@ class RunConfig(object):
     # "deploy" means deploying system from scratch and online updating,
     # "test" means freezing online learning module
     system_mode = "deploy"
-    model_save_path = "checkpoints/task_1_deploy_from_scratch_model.pkl"
-    debug_path = "debug/task_1_deploy_from_scratch_debug.pkl"
+
+    import os
+    import time
+    
+    #Create "./checkpoints" and "./debug" directories if they don't exist
+    if not os.path.exists("checkpoints"):
+        os.mkdir("checkpoints")
+    if not os.path.exists("debug"):
+        os.mkdir("debug")
+    
+    # Add task number and timestring to saved models' filename to allow storing multiple models
+    timestr = time.strftime("%Y%m%d-%H%M%S")    
+    model_save_path = "checkpoints/{task}_deploy_from_scratch_model_{time}.pkl".format(task=coming_task, time=timestr)
+    debug_path = "debug/{task}_deploy_from_scratch_debug_{time}.pkl".format(task=coming_task, time=timestr)
 
     random_seed = 42
     lr = 0.001
