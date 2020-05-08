@@ -29,3 +29,49 @@ python run.py
 
 ## Change Configurations
 Change the parameters in RunConfig at config.py.
+
+## Changes
+Change the parameters in RunConfig at config.py.
+The following changes were made to the original code:
+
+1.
+Replaced line 355 in  cvae.py:
+log["loss"].append(loss.item())
+
+with:
+
+if loss is not None:
+    log["loss"].append(loss.item())        
+else:
+    log["loss"].append(None)
+
+2.Replaced lines 41 and 42 in config.py:
+
+model_save_path = "checkpoints/task_1_deploy_from_scratch_model.pkl"
+debug_path = "debug/task_1_deploy_from_scratch_debug.pkl"
+
+with:
+
+import os
+import time
+
+#Create "./checkpoints" and "./debug" directories if they don't exist
+if not os.path.exists("checkpoints"):
+    os.mkdir("checkpoints")
+if not os.path.exists("debug"):
+    os.mkdir("debug")
+
+#Add task number and timestring to saved models' filename to allow storing multiple models
+timestr = time.strftime("%Y%m%d-%H%M%S")    
+model_save_path = "checkpoints/{task}_deploy_from_scratch_model_{time}.pkl".format(task=coming_task, time=timestr)
+debug_path = "debug/{task}_deploy_from_scratch_debug_{time}.pkl".format(task=coming_task, time=timestr)
+            
+3. Added "encoding="UTF-8" to 'open file' in several places.
+
+
+
+
+
+
+
+
