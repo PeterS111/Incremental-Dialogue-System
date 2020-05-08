@@ -112,13 +112,14 @@ class ContinuousVAE(nn.Module):
         self.available_cand_index = list()
         if self.config.system_mode in ["deploy"]:
             # deploy IDS from scratch
-            with open(os.path.join(DATA_ROOT, "candidate", "task_1.txt")) as f:
+
+            with open(os.path.join(DATA_ROOT, "candidate", "task_1.txt"),encoding="UTF-8") as f:
                 for line in f:
                     line = line.strip()
                     self.available_cand_index.append(api.candid2index[line])
         else:
             # test IDS
-            with open(os.path.join(DATA_ROOT, "candidate", self.config.coming_task + ".txt")) as f:
+            with open(os.path.join(DATA_ROOT, "candidate", self.config.coming_task + ".txt"),encoding="UTF-8") as f:
                 for line in f:
                     line = line.strip()
                     if api.candid2index[line] not in self.available_cand_index:
@@ -352,9 +353,17 @@ class ContinuousAgent(object):
             log["uncertain"].append(len(uncertain_index))
             log["certain"].append(len(certain_index))
             log["acc_in_certain"].append(acc_in_certain)
-            log["loss"].append(loss.item())
+            
+            
+            ## corrected here:
+            #log["loss"].append(loss.item())
+            if loss is not None:
+                log["loss"].append(loss.item())        
+            else:
+                log["loss"].append(None)
 
-        torch.save(self.model.state_dict(), self.config.model_save_path)
+         
+        torch.save(self.model.state_dict(), self.config.model_save_path)         
         pickle.dump(log, open(self.config.debug_path, "wb"))
 
         # Debug
